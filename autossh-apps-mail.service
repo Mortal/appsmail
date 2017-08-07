@@ -1,0 +1,14 @@
+[Unit]
+Description=Tunnel from apps-server to local appsmail daemon
+After=network.target
+
+[Service]
+ExecStart=/home/rav/codes/appsmail/autossh-apps-mail
+Restart=on-failure
+User=rav
+KillSignal=SIGINT
+SendSIGKILL=no
+Environment=AUTOSSH_GATETIME=0
+
+[Install]
+WantedBy=multi-user.target

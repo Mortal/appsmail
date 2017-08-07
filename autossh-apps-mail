@@ -1,0 +1,3 @@
+#!/bin/bash
+cd /home/rav/.ssh
+autossh -M 20234 -F /home/rav/codes/appsmail/ssh_config -N apps-port-forward

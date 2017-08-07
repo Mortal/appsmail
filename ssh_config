@@ -1,0 +1,7 @@
+Host apps-port-forward
+ServerAliveInterval 60
+IdentityFile ~/.ssh/id_rsa_apps_port
+HostName apps-server.cs.au.dk
+ControlMaster auto
+ControlPath ~/.ssh/apps-port-forward.sock
+RemoteForward 2525 127.0.0.1:2525
