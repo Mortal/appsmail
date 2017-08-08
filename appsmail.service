@@ -1,0 +1,12 @@
+[Unit]
+Description=apps SMTP proxy
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+ExecStart=/usr/bin/python appsmail.py
+Restart=on-failure
+WorkingDirectory=/home/rav/codes/appsmail
+User=rav
+EnvironmentFile=/home/rav/codes/appsmail/env.txt
