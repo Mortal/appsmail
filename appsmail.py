@@ -3,7 +3,12 @@ import time
 import smtplib
 import traceback
 import aiosmtpd.controller
+from mailbox import Maildir
+import email
 
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MAILDIR_PATH = os.path.join(BASE_DIR, 'Mail')
 
 MAIL_FROM = os.environ['MAIL_FROM']
 RELAY_HOST = os.environ['RELAY_HOST']
@@ -26,15 +31,24 @@ class AppsMailServer:
     #     return '250 OK'
 
     async def handle_DATA(self, server, session, envelope):
+        d = Maildir(MAILDIR_PATH)
+        message = email.message_from_bytes(envelope.original_content)
+        for r in envelope.rcpt_tos:
+            message['X-Rcpt-To'] = r
+        d.add(message)
+
         try:
             conn = smtplib.SMTP(RELAY_HOST, RELAY_PORT)
+            conn.ehlo()
+            conn.starttls()
             conn.login(RELAY_USER, RELAY_PASS)
             refused = conn.sendmail(envelope.mail_from,
                                     envelope.rcpt_tos,
                                     envelope.original_content)
             if refused:
-                print(refused)
-            print("To: %r" % (envelope.rcpt_tos,))
+                print(refused, flush=True)
+            print("To: %r" % (envelope.rcpt_tos,), flush=True)
+            return '250 OK'
         except smtplib.SMTPException as exn:
             traceback.print_exc()
             return '550 SMTPException: %s' % exn
@@ -49,7 +63,7 @@ def main():
             time.sleep(3600)
     except KeyboardInterrupt:
         controller.stop()
-    print("Done!")
+    print("Done!", flush=True)
 
 
 if __name__ == '__main__':
