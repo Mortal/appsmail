@@ -15,6 +15,7 @@ RELAY_HOST = os.environ['RELAY_HOST']
 RELAY_PORT = int(os.environ['RELAY_PORT'])
 RELAY_USER = os.environ['RELAY_USER']
 RELAY_PASS = os.environ['RELAY_PASS']
+LISTEN_PORT = int(os.environ.get('LISTEN_PORT', 2525))
 
 
 class AppsMailServer:
@@ -56,7 +57,7 @@ class AppsMailServer:
 
 def main():
     controller = aiosmtpd.controller.Controller(
-        AppsMailServer(), hostname='127.0.0.1', port=2525)
+        AppsMailServer(), hostname='127.0.0.1', port=LISTEN_PORT)
     controller.start()
     try:
         while True:
